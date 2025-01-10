@@ -11,6 +11,22 @@ import os
 
 from minigpt4.datasets.datasets.base_dataset import BaseDataset
 
+class RefADEvalData(torch.utils.data.Dataset):
+    def __init__(self, loaded_data, vis_processor):
+        self.loaded_data = loaded_data
+        self.vis_processor = vis_processor
+
+    def __len__(self):
+        return len(self.loaded_data)
+
+    def __getitem__(self, idx):
+        data = self.loaded_data[idx]
+        sent = data["sents"]
+        img_id = data["img_id"]
+        image_path = data["img_path"]
+        image = Image.open(image_path).convert("RGB")
+        image = self.vis_processor(image)
+        return image, sent, img_id
 
 class VQADataset(BaseDataset):
     def __init__(self, vis_processor, text_processor, vis_root, ann_paths):

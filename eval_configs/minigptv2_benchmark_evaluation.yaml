@@ -3,13 +3,12 @@ model:
   model_type: pretrain
   max_txt_len: 500
   end_sym: "</s>"
-  low_resource: False
+  low_resource: True
   prompt_template: '[INST] {} [/INST]'
-  llama_model: ""
-  ckpt: ""
+  llama_model: "meta-llama/Llama-2-7b-chat-hf"
+  ckpt: "./checkpoint_stage3.pth"
   lora_r: 64
   lora_alpha: 16
-
 
 datasets:
   cc_sbu_align:
@@ -22,6 +21,10 @@ datasets:
         name: "blip_caption"
 
 evaluation_datasets:
+  mvtech_ad:
+    batch_size: 6
+    eval_file_path: /mnt/data/MVTEC
+    max_new_tokens: 20
   refcoco:
     eval_file_path: /path/to/eval/annotation/path  
     img_path: /path/to/eval/image/path      
@@ -71,7 +74,7 @@ evaluation_datasets:
 run:
   task: image_text_pretrain
   name: minigptv2_evaluation
-  save_path: /path/to/save/folder_path
+  save_path: ./outputs
 
   
 
