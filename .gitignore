@@ -183,3 +183,5 @@ dataset/Evaluation.md
 jupyter_notebook.slurm
 MVTEC/
 MVTEC_det/
+*.pth
+log.*
