@@ -163,7 +163,6 @@ cython_debug/
 wandb/
 jobs/logs/
 *.out
-*ipynb
 .history/
 *.json
 *.sh
@@ -182,3 +181,7 @@ sbatch_generate*
 eval_data/
 dataset/Evaluation.md
 jupyter_notebook.slurm
+MVTEC/
+MVTEC_det/
+*.pth
+log.*

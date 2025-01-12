@@ -1,0 +1,6 @@
+datasets:
+  mvtec_ad:
+    data_type: images
+    build_info:
+      image_path: ./MVTEC_det/images
+      ann_path: ./MVTEC_det/mvtech_ad_data_for_regression.json
