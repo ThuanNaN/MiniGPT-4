@@ -39,7 +39,7 @@ class MVTecDataset(Dataset):
         
         ans_defect = "defect" if info["is_broken"] == True else "non-defect"
         ans_para = f"<p>{ans_cls}-{ans_defect}</p>"
-        answer = f"{ans_para}<{gt_bbox[0]}> <{gt_bbox[1]}><{gt_bbox[2]}><{gt_bbox[3]}>"
+        answer = f"{ans_para} {{<{gt_bbox[0]}><{gt_bbox[1]}><{gt_bbox[2]}><{gt_bbox[3]}>}}"
 
         instruction = random.choice(self.instruction_pool).format(input)
         instruction = "<Img><ImageHere></Img> {} ".format(instruction)
