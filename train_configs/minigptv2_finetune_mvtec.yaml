@@ -32,10 +32,10 @@ run:
   warmup_lr: 1e-6
 
   weight_decay: 0.05
-  max_epoch: 10
+  max_epoch: 5
   num_workers: 6
   warmup_steps: 1000
-  iters_per_epoch: 1000
+  iters_per_epoch: 2000
 
   seed: 42
   output_dir: "mvtec_outputs"
@@ -51,5 +51,5 @@ run:
   dist_url: "env://"
   distributed: True
 
-  wandb_log: True
+  wandb_log: False
   job_name: minigptv2_finetune
