@@ -7,6 +7,7 @@ model:
   llama_model: "meta-llama/Llama-2-7b-chat-hf"
   ckpt: "./ckpt/checkpoint_stage3.pth"
   use_grad_checkpoint: True
+  low_resource: True
   chat_template: True
   lora_r: 64
   lora_alpha: 16
