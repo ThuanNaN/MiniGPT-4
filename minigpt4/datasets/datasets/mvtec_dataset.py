@@ -29,15 +29,17 @@ class MVTecDataset(Dataset):
     def __getitem__(self, index):
         info = self.ann[index]
         gt_bbox = info["bbox"]
+        ans_cls = info["class"]
 
         image_path = os.path.join(self.vis_root, info['image_path'])
         image = Image.open(image_path).convert("RGB")
         image = self.vis_processor(image)
 
-        input = "detect defect or non-defect and return the bounding box"
+        input = "a defect or not-defect object and return the bounding boxes and its label. If not, bound around the object."
         
-        ans_cls = "defect" if info["is_broken"] == True else "non-defect"
-        answer = f"{ans_cls}<{gt_bbox[0]}><{gt_bbox[1]}><{gt_bbox[2]}><{gt_bbox[3]}>"
+        ans_defect = "defect" if info["is_broken"] == True else "non-defect"
+        ans_para = f"<p>{ans_cls}-{ans_defect}</p>"
+        answer = f"{ans_para}{{<{gt_bbox[0]}><{gt_bbox[1]}><{gt_bbox[2]}><{gt_bbox[3]}>}}"
 
         instruction = random.choice(self.instruction_pool).format(input)
         instruction = "<Img><ImageHere></Img> {} ".format(instruction)
