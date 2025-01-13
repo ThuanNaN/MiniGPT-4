@@ -19,7 +19,7 @@ peft==0.2.0
 sentence-transformers
 gradio==3.47.1
 accelerate==0.20.3
-bitsandbytes==0.37.0
+bitsandbytes>=0.40.0
 scikit-image
 visual-genome
 wandb
