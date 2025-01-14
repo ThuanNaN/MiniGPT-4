@@ -78,7 +78,8 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-.pth
+*.pth
+MVTEC_det/
 
 # IPython
 profile_default/
@@ -167,7 +168,6 @@ jobs/logs/
 *ipynb
 .history/
 *.json
-*.sh
 .ipynb_common
 logs/
 results/
