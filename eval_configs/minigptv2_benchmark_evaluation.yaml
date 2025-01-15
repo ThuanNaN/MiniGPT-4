@@ -21,10 +21,15 @@ datasets:
         name: "blip_caption"
 
 evaluation_datasets:
+  textvqa:
+    batch_size: 6
+    eval_file_path: /mnt/dataset2/TextVQA
+    img_path: /mnt/dataset2/TextVQA/train_images
+    max_new_tokens: 20
   mvtech_ad:
     batch_size: 6
     eval_file_path: ./MVTEC_det/mvtech_ad_data_for_regression.json
-    max_new_tokens: 40
+    max_new_tokens: 30
   refcoco:
     eval_file_path: /path/to/eval/annotation/path  
     img_path: /path/to/eval/image/path      

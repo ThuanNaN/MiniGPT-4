@@ -12,6 +12,22 @@ from PIL import Image
 from minigpt4.datasets.datasets.base_dataset import BaseDataset
 
 
+class EvalTextVQAData(torch.utils.data.Dataset):
+    def __init__(self, loaded_data, image_processor):
+        self.loaded_data = loaded_data
+        self.image_processor = image_processor
+
+    def __len__(self):
+        return len(self.loaded_data)
+
+    def __getitem__(self, idx):
+        data = self.loaded_data[idx]
+        question = data["question"]
+        question = f"[vqa] {question}"
+        image = Image.open(data["image_path"]).convert("RGB")
+        image = self.image_processor(image)
+        return image, question, data["image_id"], data["answers"]
+
 class RefADEvalData(torch.utils.data.Dataset):
     def __init__(self, loaded_data, vis_processor):
         self.loaded_data = loaded_data

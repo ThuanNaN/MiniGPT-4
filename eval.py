@@ -3,7 +3,7 @@ import re
 import json
 import argparse
 import cv2
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 import numpy as np
 from PIL import Image
@@ -13,8 +13,9 @@ from torch.utils.data import DataLoader
 from datasets import load_dataset
 
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 
-from minigpt4.datasets.datasets.vqa_datasets import RefADEvalData
+from minigpt4.datasets.datasets.vqa_datasets import RefADEvalData, EvalTextVQAData
 from minigpt4.common.vqa_tools.VQA.PythonHelperTools.vqaTools.vqa import VQA
 from minigpt4.common.vqa_tools.VQA.PythonEvaluationTools.vqaEvaluation.vqaEval import (
     VQAEval,
@@ -63,8 +64,9 @@ if "mvtech" in args.dataset:
         mvtech_ad_data_for_regression = json.load(f)
 
     # Limit the data to 10% of the original data
-    mvtech_ad_data_for_regression = mvtech_ad_data_for_regression[:len(mvtech_ad_data_for_regression)//10]
-    # mvtech_ad_data_for_regression = mvtech_ad_data_for_regression[:10]
+    mvtech_ad_data_for_regression = mvtech_ad_data_for_regression[
+        : len(mvtech_ad_data_for_regression) // 10
+    ]
     data = RefADEvalData(mvtech_ad_data_for_regression, vis_processor)
     eval_dataloader = DataLoader(data, batch_size=batch_size, shuffle=False)
 
@@ -225,3 +227,73 @@ if "mvtech" in args.dataset:
             flush=True,
         )
     print(f"mAP: {map_value * 100}", flush=True)
+
+if "textvqa" in args.dataset:
+    eval_file_path = cfg.evaluation_datasets_cfg["textvqa"]["eval_file_path"]
+    img_path = cfg.evaluation_datasets_cfg["textvqa"]["img_path"]
+    batch_size = cfg.evaluation_datasets_cfg["textvqa"]["batch_size"]
+    max_new_tokens = cfg.evaluation_datasets_cfg["textvqa"]["max_new_tokens"]
+
+    with open(os.path.join(eval_file_path, "TextVQA_0.5.1_train.json"), "r") as f:
+        train_data = json.load(f)
+
+    data = []
+    for item in train_data["data"]:
+        data.append(
+            {
+                "question": item["question"],
+                "image_id": item["image_id"],
+                "image_path": os.path.join(img_path, item["image_id"] + ".jpg"),
+                "answers": item["answers"],
+            }
+        )
+
+    data = data[: len(data) // 10]  # Limit to 10% of the data
+    # data = data[:10]  # Limit to 10 samples
+    textvqa = EvalTextVQAData(data, vis_processor)
+    eval_dataloader = DataLoader(textvqa, batch_size=batch_size, shuffle=False)
+
+    count = 0
+    total = 0
+    minigpt4_predict = []
+    print("Evaluating on TextVQA dataset")
+    for images, texts, image_id, labels in tqdm(eval_dataloader):
+        texts = prepare_texts(
+            texts, conv_temp
+        )  # warp the texts with conversation template
+        answers = model.generate(
+            images, texts, max_new_tokens=max_new_tokens, do_sample=False
+        )
+
+        # Stack the labels to correct order (transpose)
+        labels = [list(x) for x in zip(*labels)]
+
+        for answer, labels in zip(answers, labels):
+            result = dict()
+            result["pred"] = answer.lower().replace("<unk>", "").strip()
+            result["gt"] = Counter(labels).most_common(1)[0][0]
+
+            minigpt4_predict.append(result)
+            if answer.lower() == result["gt"]:
+                count += 1
+            total += 1
+
+            # Calculate BLEU score
+            chencherry = SmoothingFunction()
+            bleu_score = sentence_bleu(
+                labels, answer, smoothing_function=chencherry.method1
+            )
+            result["bleu"] = bleu_score
+
+    print("Saving predictions to", save_path)
+    
+    file_save_path = os.path.join(save_path, "textvqa.json")
+    with open(file_save_path, "w") as f:
+        json.dump(minigpt4_predict, f)
+
+    print("Top 1 Accuracy:", count / total * 100, flush=True)
+    print(
+        "Average BLEU score:",
+        np.mean([pred["bleu"] for pred in minigpt4_predict]),
+        flush=True,
+    )
