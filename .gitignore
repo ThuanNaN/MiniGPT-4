@@ -183,5 +183,7 @@ dataset/Evaluation.md
 jupyter_notebook.slurm
 MVTEC/
 MVTEC_det/
+TextVQA/
+TextVQA_tiny/
 *.pth
 log.*

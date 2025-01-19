@@ -28,6 +28,13 @@ evaluation_datasets:
     eval_file_path: ./data/MVTEC_det/val_data.json
     max_new_tokens: 40
 
+  textvqa:
+    batch_size: 4
+    eval_file_path: ./data/TextVQA_tiny/val.json
+    img_path: ./data/TextVQA_tiny/images
+    max_new_tokens: 20
+
+
 run:
   task: image_text_pretrain
   name: minigptv2_evaluation
