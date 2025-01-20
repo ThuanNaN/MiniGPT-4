@@ -140,10 +140,10 @@ for item in mvtec_ad_data_for_regression:
         gt_class = 0  # Class 0 for "not-defect"
     else:
         gt_bbox = [
-            item["bbox"][0],
-            item["bbox"][1],
-            item["bbox"][2],
-            item["bbox"][3],
+            item["bbox"][0] / res * item["width"],
+            item["bbox"][1] / res * item["height"],
+            item["bbox"][2] / res * item["width"],
+            item["bbox"][3] / res * item["height"],
         ]
         gt_class = 1  # Class 1 for "defect"
 
