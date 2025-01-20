@@ -13,7 +13,7 @@ model:
   lora_alpha: 16
 
 datasets:
-  mvtec_ad: 
+  textvqa: 
     batch_size: 2
     vis_processor:
       train:
@@ -39,7 +39,7 @@ run:
   iters_per_epoch: 2000
 
   seed: 42
-  output_dir: "mvtec_outputs"
+  output_dir: "textvqa_outputs"
 
   amp: True
   resume_ckpt_path: null
