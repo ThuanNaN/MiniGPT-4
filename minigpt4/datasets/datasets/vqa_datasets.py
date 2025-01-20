@@ -8,6 +8,8 @@
 import torch
 from PIL import Image
 import os
+import random
+import json
 
 from minigpt4.datasets.datasets.base_dataset import BaseDataset
 
@@ -21,6 +23,39 @@ class VQAEvalDataset(BaseDataset):
     def __init__(self, vis_processor, text_processor, vis_root, ann_paths):
         super().__init__(vis_processor, text_processor, vis_root, ann_paths)
 
+
+class TextVQADataset(torch.utils.data.Dataset):
+    def __init__(self, vis_processor, text_processor, vis_root, ann_path):
+        self.vis_root = vis_root
+        self.vis_processor = vis_processor
+        self.text_processor = text_processor
+
+        self.instruction_pool =[
+            "[vqa] {}",
+            "[vqa] Based on the image, respond to this question with a short answer: {}"
+        ]
+        with open(ann_path, 'r') as f:
+            self.data = json.load(f)
+
+    def __len__(self):
+        return len(self.data)
+    
+    def __getitem__(self, index):
+        sample = self.data[index]
+        image_path = os.path.join(self.vis_root, f"{sample['image_id']}.jpg")
+        image = Image.open(image_path).convert("RGB")
+        image = self.vis_processor(image)
+        question = self.text_processor(sample["question"])
+        answer = self.text_processor(sample["answer"])
+        instruction = random.choice(self.instruction_pool).format(question)
+        instruction = "<Img><ImageHere></Img> {} ".format(instruction)
+        return {
+            "image": image,
+            "instruction_input": instruction,
+            "answer": answer,
+            "image_id": sample['image_id']
+        }
+    
 
 class OKVQAEvalData(torch.utils.data.Dataset):
     def __init__(self, loaded_data, vis_processor, root_path):

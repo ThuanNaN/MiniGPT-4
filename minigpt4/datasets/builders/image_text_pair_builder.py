@@ -19,6 +19,7 @@ from minigpt4.datasets.datasets.coco_vqa_datasets import COCOVQADataset
 from minigpt4.datasets.datasets.ocrvqa_dataset import OCRVQADataset
 from minigpt4.datasets.datasets.coco_caption import COCOCapDataset
 from minigpt4.datasets.datasets.mvtec_dataset import MVTecDataset
+from minigpt4.datasets.datasets.vqa_datasets import TextVQADataset
 
 @registry.register_builder("multitask_conversation")
 class MultitaskConversationBuilder(BaseDatasetBuilder):
@@ -417,6 +418,28 @@ class MVTECADBuilder(BaseDatasetBuilder):
 
         return datasets
 
+
+@registry.register_builder("textvqa")
+class TextVQABuilder(BaseDatasetBuilder):
+    train_dataset_cls = TextVQADataset
+    DATASET_CONFIG_DICT = {
+        "default": "configs/datasets/textvqa/default.yaml",
+    }
+    def build_datasets(self):
+        logging.info("Building datasets...")
+        self.build_processors()
+        build_info = self.config.build_info
+        datasets = dict()
+
+        # create datasets
+        dataset_cls = self.train_dataset_cls
+        datasets['train'] = dataset_cls(
+            vis_processor=self.vis_processors["train"],
+            text_processor=self.text_processors["train"],
+            vis_root=build_info.image_path,
+            ann_path=build_info.ann_path,
+        )
+        return datasets
 
 
 class DocumentVQABuilder(BaseDatasetBuilder):
