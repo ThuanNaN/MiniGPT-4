@@ -171,7 +171,6 @@ logs/
 results/
 prompts/
 output/
-ckpt/
 divide_vqa.py
 jobs/
 
