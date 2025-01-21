@@ -112,7 +112,7 @@ for images, texts, image_id, labels in tqdm(eval_dataloader):
 print("Saving predictions to", save_path)
 file_save_path = os.path.join(save_path, "textvqa.json")
 with open(file_save_path, "w") as f:
-    json.dump(minigpt4_predict, f)
+    json.dump(minigpt4_predict, f, indent=4)
 
 print("Top 1 Accuracy:", count / total * 100, flush=True)
 print("Average BLEU score: ",

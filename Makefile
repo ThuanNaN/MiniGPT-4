@@ -20,3 +20,8 @@ train_textvqa:
 
 demo_textvqa:
 	python demo_v2.py --cfg-path eval_configs/minigptv2_eval_textvqa.yaml  --gpu-id 0
+
+
+train_mix:
+	CUDA_VISIBLE_DEVICES=0 \
+	python train.py --cfg-path train_configs/minigptv2_finetune_mix.yaml

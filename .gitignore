@@ -171,7 +171,6 @@ logs/
 results/
 prompts/
 output/
-ckpt/
 divide_vqa.py
 jobs/
 
@@ -187,3 +186,4 @@ TextVQA/
 TextVQA_tiny/
 *.pth
 log.*
+*.zip

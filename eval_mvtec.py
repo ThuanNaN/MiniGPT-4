@@ -43,7 +43,8 @@ class RefADEvalData(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         data = self.loaded_data[idx]
         sent = "[detection] a defect or not-defect object and return the bounding boxes and its label. If not, bound around the object."
-        img_id = (data["class"] + "." + os.path.basename(data["image_path"]).split(".")[0])
+        tag = "good" if not data["is_broken"] else "broken"
+        img_id = (data["class"] + "." + tag + "."  + os.path.basename(data["image_path"]).split(".")[0])
         fix_path = os.path.join("./data/MVTEC_det/images", "/".join(data["image_path"].split("/")[1:4]))
         image = Image.open(fix_path).convert("RGB")
         image = self.vis_processor(image)
@@ -59,7 +60,6 @@ max_new_tokens = cfg.evaluation_datasets_cfg["mvtec_ad"]["max_new_tokens"]
 with open(eval_file_path, "r") as f:
     mvtec_ad_data_for_regression = json.load(f)
 
-# mvtec_ad_data_for_regression = mvtec_ad_data_for_regression[:10]
 data = RefADEvalData(mvtec_ad_data_for_regression, vis_processor)
 eval_dataloader = DataLoader(data, batch_size=batch_size, shuffle=False)
 
@@ -121,6 +121,7 @@ file_save_path = os.path.join(save_path, "mvtec_ad_regression.json")
 with open(file_save_path, "w") as f:
     json.dump(minigpt4_predict, f, indent=4)
 
+
 metric = MeanAveragePrecision(iou_type="bbox", class_metrics=True)
 
 # Calculate metrics
@@ -128,22 +129,25 @@ count = 0
 total = 0
 res = args.res
 for item in mvtec_ad_data_for_regression:
-    img_id = (item["class"] + "." + os.path.basename(item["image_path"]).split(".")[0])
-    label = item["class"]
     is_broken = item["is_broken"]
+    label = item["class"]
+    tag = "good" if not item["is_broken"] else "broken"
+    img_id = (item["class"] + "." + tag + "."  + os.path.basename(item["image_path"]).split(".")[0])
+    if img_id not in minigpt4_predict:
+        continue
     outputs = minigpt4_predict[img_id]
 
     # Determine ground truth bounding box and class
     if not is_broken:
         # If not broken, the bounding box is the whole image
-        gt_bbox = [0, 0, item["width"], item["height"]]
+        gt_bbox = [0, 0, 100, 100]
         gt_class = 0  # Class 0 for "not-defect"
     else:
         gt_bbox = [
             item["bbox"][0],
             item["bbox"][1],
             item["bbox"][2],
-            item["bbox"][3],
+            item["bbox"][3]
         ]
         gt_class = 1  # Class 1 for "defect"
 
@@ -180,12 +184,11 @@ for item in mvtec_ad_data_for_regression:
                     int(match.group(4)),
                     int(match.group(5)),
                 ]
-                height = item["height"]
-                width = item["width"]
-                pred_bbox[0] = pred_bbox[0] / res * width
-                pred_bbox[1] = pred_bbox[1] / res * height
-                pred_bbox[2] = pred_bbox[2] / res * width
-                pred_bbox[3] = pred_bbox[3] / res * height
+                pred_bbox[0] = pred_bbox[0]
+                pred_bbox[1] = pred_bbox[1]
+                pred_bbox[2] = pred_bbox[2]
+                pred_bbox[3] = pred_bbox[3]
+
 
                 pred_boxes.append(pred_bbox)
                 pred_scores.append(1.0)  # Assuming confidence score of 1
@@ -214,12 +217,5 @@ for item in mvtec_ad_data_for_regression:
 # Compute metric
 result = metric.compute()
 map_value = result["map"].item()
-
-# Print class-wise metrics
-# for i, class_map in enumerate(result["map_per_class"]):
-#     class_name = "defect" if i == 1 else "not-defect"
-#     print( f"mAP for {class_name}: {class_map.item() * 100 if not torch.isnan(class_map) else 0:.4f}",
-#             flush=True
-#     )
 
 print(f"mAP: {map_value * 100}", flush=True)
