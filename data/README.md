@@ -6,8 +6,8 @@
 - Download
 
 ```bash
-gdown 11a3HD9dEF1qaBj63ZndIS4l39itzhQcw
-unzip MVTEC_det_v2.zip
+gdown 1eOlJVGKLIyIPoGA5kQLS3LJtWmC8obK8
+unzip MVTEC_det.zip
 ```
 
 ## TextVQA
@@ -17,6 +17,6 @@ unzip MVTEC_det_v2.zip
 - Download
 
 ```bash
-gdown 11v-zqWnXaJzPzSOTBKteQWNXOc6104m2
+gdown 1uvxHzc50yHRfNNKJxm7frzQEybkSAnh2
 unzip TextVQA_tiny.zip
 ```
