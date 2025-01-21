@@ -5,7 +5,7 @@
 - Download ckpt
 
 ```bash
-gdown 11nAPjEok8eAGGEG1N2vXo3kBLCg0WgUk
+gdown 1HkoUUrjzFGn33cSiUkI-KcT-zysCynAz
 ```
 
 ## MVTEC AD
