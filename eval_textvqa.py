@@ -50,6 +50,7 @@ class EvalTextVQAData(torch.utils.data.Dataset):
         question = f"[vqa] {question}"
         image = Image.open(data["image_path"]).convert("RGB")
         image = self.image_processor(image)
+        question = f"[vqa] Based on the image, respond to this question with a short answer: {question}"
         return image, question, data["image_id"], data["answers"]
 
 
