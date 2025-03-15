@@ -43,7 +43,8 @@ class ViVQADataset(torch.utils.data.Dataset):
     
     def __getitem__(self, index):
         sample = self.data.iloc[index]
-        image_path = os.path.join(self.vis_root, f"{sample['image_id']}.jpg")
+        image_id = str(sample['img_id']).zfill(12)
+        image_path = os.path.join(self.vis_root, f"{image_id}.jpg")
         image = Image.open(image_path).convert("RGB")
         image = self.vis_processor(image)
         question = self.text_processor(sample["question"])
@@ -54,7 +55,7 @@ class ViVQADataset(torch.utils.data.Dataset):
             "image": image,
             "instruction_input": instruction,
             "answer": answer,
-            "image_id": sample['image_id']
+            "image_id": image_id
         }
 
 
