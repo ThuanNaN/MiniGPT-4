@@ -6,7 +6,8 @@ model:
   low_resource: True
   prompt_template: '[INST] {} [/INST]'
   llama_model: "meta-llama/Llama-2-7b-chat-hf"
-  ckpt: "./ckpt/checkpoint_stage3.pth"
+  # ckpt: "./ckpt/checkpoint_stage3.pth"
+  ckpt: "./minigpt4/vivqa_outputs/20250314075/checkpoint_1.pth"
   lora_r: 64
   lora_alpha: 16
 
@@ -34,6 +35,11 @@ evaluation_datasets:
     img_path: ./data/TextVQA_tiny/images
     max_new_tokens: 20
 
+  vivqa:
+    batch_size: 4
+    eval_file_path: ./data/ViVQA/test.csv
+    img_path: ./data/ViVQA/images
+    max_new_tokens: 20
 
 run:
   task: image_text_pretrain

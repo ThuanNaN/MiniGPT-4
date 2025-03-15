@@ -1,5 +1,6 @@
+# MVTEC AD dataset
 eval_mvtec:
-	CUDA_VISIBLE_DEVICES=0 \
+	CUDA_VISIBLE_DEVICES=1 \
 	python eval_mvtec.py --cfg-path ./eval_configs/minigptv2_benchmark_evaluation.yaml
 
 train_mvtec:
@@ -10,8 +11,9 @@ demo_mvtec:
 	python demo_v2.py --cfg-path eval_configs/minigptv2_eval_mvtec.yaml  --gpu-id 0
 
 
+# TextVQA dataset
 eval_textvqa:
-	CUDA_VISIBLE_DEVICES=0 \
+	CUDA_VISIBLE_DEVICES=1 \
 	python eval_textvqa.py --cfg-path ./eval_configs/minigptv2_benchmark_evaluation.yaml
 
 train_textvqa:
@@ -22,6 +24,14 @@ demo_textvqa:
 	python demo_v2.py --cfg-path eval_configs/minigptv2_eval_textvqa.yaml  --gpu-id 0
 
 
-train_mix:
+# ViVQA dataset
+eval_vivqa:
+	CUDA_VISIBLE_DEVICES=1 \
+	python eval_vivqa.py --cfg-path ./eval_configs/minigptv2_benchmark_evaluation.yaml
+
+train_vivqa:
 	CUDA_VISIBLE_DEVICES=0 \
-	python train.py --cfg-path train_configs/minigptv2_finetune_mix.yaml
+	python train.py --cfg-path train_configs/minigptv2_finetune_vivqa.yaml
+
+demo_vivqa:
+	python demo_v2.py --cfg-path eval_configs/minigptv2_eval_vivqa.yaml  --gpu-id 0

@@ -187,3 +187,4 @@ TextVQA_tiny/
 *.pth
 log.*
 *.zip
+test.ipynb
