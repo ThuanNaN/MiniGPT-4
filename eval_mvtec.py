@@ -90,9 +90,7 @@ if args.resample:
         resamples = []
         eval_dataloader = DataLoader(data, batch_size=batch_size, shuffle=False)
 
-        for images, questions, img_ids, labels, image_paths in tqdm(
-            eval_dataloader
-        ):
+        for images, questions, img_ids, labels, image_paths in tqdm(eval_dataloader):
             texts = prepare_texts(questions, conv_temp)
             answers = model.generate(images, 
                                      texts, 
@@ -111,7 +109,6 @@ if args.resample:
                         "class": labels, 
                         "img_path": image_paths
                     })
-
         if len(resamples) == 0:
             break
 
