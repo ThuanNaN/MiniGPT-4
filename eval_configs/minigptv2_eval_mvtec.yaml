@@ -5,8 +5,8 @@ model:
   end_sym: "</s>"
   low_resource: True
   prompt_template: '[INST] {} [/INST]'
-  # ckpt: "./minigpt4/mvtec_outputs/20250112105/checkpoint_9.pth"
-  ckpt: "./ckpt/checkpoint_stage3.pth"
+  ckpt: "./minigpt4/mvtec_outputs/20250121073/checkpoint_4.pth"
+  # ckpt: "./ckpt/checkpoint_stage3.pth"
   lora_r: 64
   lora_alpha: 16
 

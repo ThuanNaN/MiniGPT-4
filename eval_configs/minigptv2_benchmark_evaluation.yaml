@@ -7,7 +7,8 @@ model:
   prompt_template: '[INST] {} [/INST]'
   llama_model: "meta-llama/Llama-2-7b-chat-hf"
   # ckpt: "./ckpt/checkpoint_stage3.pth"
-  ckpt: "./minigpt4/vivqa_outputs/20250314075/checkpoint_1.pth"
+  # ckpt: "./minigpt4/vivqa_outputs/20250314075/checkpoint_1.pth"
+  ckpt: "./minigpt4/mvtec_outputs/20250121073/checkpoint_4.pth"
   lora_r: 64
   lora_alpha: 16
 
@@ -28,12 +29,6 @@ evaluation_datasets:
     batch_size: 4
     eval_file_path: ./data/MVTEC_det/val_data.json
     max_new_tokens: 40
-
-  textvqa:
-    batch_size: 4
-    eval_file_path: ./data/TextVQA_tiny/val.json
-    img_path: ./data/TextVQA_tiny/images
-    max_new_tokens: 20
 
   vivqa:
     batch_size: 4
