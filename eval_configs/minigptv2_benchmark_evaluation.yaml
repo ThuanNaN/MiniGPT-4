@@ -1,0 +1,42 @@
+model:
+  arch: minigpt_v2
+  model_type: pretrain
+  max_txt_len: 500
+  end_sym: "</s>"
+  low_resource: True
+  prompt_template: '[INST] {} [/INST]'
+  llama_model: "meta-llama/Llama-2-7b-chat-hf"
+  # ckpt: "./ckpt/checkpoint_stage3.pth"
+  # ckpt: "./minigpt4/vivqa_outputs/20250314075/checkpoint_1.pth"
+  ckpt: "./minigpt4/mvtec_outputs/20250121073/checkpoint_4.pth"
+  lora_r: 64
+  lora_alpha: 16
+
+
+datasets:
+  cc_sbu_align:
+    vis_processor:
+      train:
+        name: "blip2_image_eval"
+        image_size: 448
+    text_processor:
+      train:
+        name: "blip_caption"
+
+
+evaluation_datasets:
+  mvtec_ad:
+    batch_size: 4
+    eval_file_path: ./data/MVTEC_det/val_data.json
+    max_new_tokens: 40
+
+  vivqa:
+    batch_size: 4
+    eval_file_path: ./data/ViVQA/test.csv
+    img_path: ./data/ViVQA/images
+    max_new_tokens: 20
+
+run:
+  task: image_text_pretrain
+  name: minigptv2_evaluation
+  save_path: eval_outputs
