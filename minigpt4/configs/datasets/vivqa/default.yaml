@@ -1,0 +1,6 @@
+datasets:
+  vivqa:
+    data_type: images
+    build_info:
+      image_path: ./data/ViVQA/images
+      ann_path: ./data/ViVQA/train.csv
